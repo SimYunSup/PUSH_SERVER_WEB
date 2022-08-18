@@ -2,6 +2,7 @@
   "name": "push_server_web",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "license": "MIT",
   "scripts": {
     "build": "webpack --mode=production",
@@ -10,6 +11,8 @@
   "dependencies": {},
   "devDependencies": {
     "css-loader": "^6.7.1",
+    "lottie-web": "^5.9.6",
+    "mini-css-extract-plugin": "^2.6.1",
     "postcss-loader": "^7.0.1",
     "postcss-preset-env": "^7.7.2",
     "sass": "^1.54.4",

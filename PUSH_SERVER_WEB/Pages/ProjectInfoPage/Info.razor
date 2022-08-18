@@ -1,0 +1,114 @@
+@page "/project/{Id}"
+@inject IProjectService ProjectService
+
+<ProjectNavbar ProjectId="@Id" />
+@if (ProjectService.ProjectInfo != null)
+{
+    <div class="mx-auto">
+        <div class="mb-5">
+            @if(isEditingTitle)
+            {
+                <InputText @bind-Value="TemporaryTitle" />
+            }
+            else
+            {
+                <div class="info__title">
+                    <span>@ProjectService.ProjectInfo.ProjectName</span>
+                    <button class="btn" @onclick="ToggleEditingTitle">
+                        <span class="oi oi-brush" aria-hidden="true"></span>
+                        <span class="d-none">Edit Name</span>
+                    </button>
+                </div>
+            }
+        </div>
+        <div class="info-section">
+            <h3 class="info-section__title">프로젝트 키</h3>
+            <table class="info-table">
+                <tbody>
+                    <tr class="info-table__row">
+                        <td class="info-table__name">
+                            API Key
+                        </td>
+                        <td class="info-table__name">
+                            <span>
+                                @ProjectService.ProjectInfo.ClientKey
+                            </span>
+                            <button class="btn">
+                                <span class="oi oi-reload" aria-hidden="true"></span>
+                                <span class="d-none">Refresh API Key</span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="info-section">
+            <h3 class="info-section__title">기본 정보</h3>
+            <table class="info-table">
+                <tbody>
+                    <tr class="info-table__row">
+                        <td class="info-table__name">
+                            ID
+                        </td>
+                        <td class="info-table__name">
+                            <span>
+                                @ProjectService.ProjectInfo.Id
+                            </span>
+                        </td>
+                    </tr>
+                    <tr class="info-table__row">
+                        <td class="info-table__name">
+                            생성 일자
+                        </td>
+                        <td class="info-table__name">
+                            <span>
+                                @ProjectService.ProjectInfo.CreatedAt
+                            </span>
+                        </td>
+                    </tr>
+                    <tr class="info-table__row">
+                        <td class="info-table__name">
+                            수정 일자
+                        </td>
+                        <td class="info-table__name">
+                            <span>
+                                @ProjectService.ProjectInfo.UpdatedAt
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@code {
+    public string TemporaryTitle { get; set; } = "";
+    private bool isEditingTitle = false;
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) {
+            ProjectService.GetProject(1);
+        }
+        if (isEditingTitle) {
+            TemporaryTitle = ProjectService.ProjectInfo?.ProjectName ?? "";
+        }
+        return base.OnAfterRenderAsync(firstRender);
+    }
+    public void ToggleEditingTitle ()
+    {
+        isEditingTitle = !isEditingTitle;
+    }
+
+    public void editTitle()
+    {
+        ToggleEditingTitle();
+        ProjectService.ChangeProjectName(TemporaryTitle);
+    }
+
+    [Parameter]
+    public string? Id { get; set; } = "";
+
+}
+

@@ -1,0 +1,48 @@
+@page "/login"
+@inject IAuthenticationService AuthenticationService
+@inject IJSRuntime JS
+
+<PageTitle>Login - BCSD PUSH SERVER</PageTitle>
+
+<div class="login-form">
+    <div id="logo-animation"></div>
+    <h3 class="logo">BCSD PUSH SERVER</h3>
+    <EditForm 
+        Model="@LoginForm"
+        OnValidSubmit="@HandleSubmitLoginForm"
+        >
+        <DataAnnotationsValidator />
+        <div class="mb-3">
+            <label for="login-id">아이디</label>
+            <InputText 
+                @bind-Value="LoginForm.Identifier" 
+                id="login-id"
+                class="form-control"
+             />
+             <ValidationMessage For="() => LoginForm.Identifier" />
+        </div>
+        <div class="mb-5">
+            <label for="login-password">비밀번호</label>
+            <InputText 
+                @bind-Value="LoginForm.Password"
+                id="login-password" 
+                class="form-control"
+            />
+             <ValidationMessage For="() => LoginForm.Password" />
+        </div>
+        <div>
+            <button class="btn btn-primary w-100" type="submit">로그인</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    protected override async void OnInitialized () {
+        await JS.InvokeVoidAsync("BlazorInsertedJS.loadLottieAnimation", "logo-animation", "./static/push-up.json");
+    }
+    private LoginForm LoginForm = new() {};
+    private void HandleSubmitLoginForm()
+    {
+        Console.WriteLine("확인");
+    }
+}

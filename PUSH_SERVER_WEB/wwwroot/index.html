@@ -9,18 +9,24 @@
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
     <link href="PUSH_SERVER_WEB.styles.css" rel="stylesheet" />
+    <link href="_content/Blazored.Modal/blazored-modal.css" rel="stylesheet" />
 </head>
 
 <body>
-    <div id="app">Loading...</div>
+    <div id="app">
+        <span id="loading">
+
+        </span>
+    </div>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
-    <script src="_framework/blazor.webassembly.js"></script>
     <script src="build/index.js"></script>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="_content/Blazored.Modal/blazored.modal.js"></script>
 </body>
 
 </html>

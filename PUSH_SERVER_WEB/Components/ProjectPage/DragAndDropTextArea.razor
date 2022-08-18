@@ -1,0 +1,61 @@
+@inherits InputTextArea
+@inject IJSRuntime JS
+
+<div @ref="dropZoneElement" class="droptext-area">
+    <div>
+        <textarea
+            id="@Id"
+            class="form-control @CssClass"
+            @bind="CurrentValueAsString" 
+            @bind:event="oninput"
+        />
+        <InputFile style="display: none;" OnChange="@OnChange" @ref="inputFile" />
+    </div>
+    @if(ErrorMessage == "") 
+    {
+        <div class="form-text text-muted">
+            JSON 파일을 Drag and Drop하면 내용이 들어갑니다.
+        </div>
+    } 
+    else 
+    {
+        <div class="form-text text-error">
+            @ErrorMessage
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+    private string ErrorMessage = "";
+    ElementReference dropZoneElement;
+    InputFile inputFile = new InputFile {};
+
+    IJSObjectReference? _dropZoneInstance;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Initialize the drop zone
+            _dropZoneInstance = await JS.InvokeAsync<IJSObjectReference>("BlazorInsertedJS.initializeFileDropZone", dropZoneElement, inputFile.Element);
+        }
+    }
+
+    async Task OnChange(InputFileChangeEventArgs e)
+    {
+        using var stream = e.File.OpenReadStream();
+        using var ms = new MemoryStream();
+        await stream.CopyToAsync(ms);
+        CurrentValueAsString = System.Text.Encoding.UTF8.GetString(ms.ToArray());
+    }
+    public async ValueTask DisposeAsync()
+    {
+        if (_dropZoneInstance != null)
+        {
+            await _dropZoneInstance.InvokeVoidAsync("dispose");
+            await _dropZoneInstance.DisposeAsync();
+        }
+    }
+}

@@ -2,8 +2,36 @@
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<ul class="project-list">
+    <li class="project-button project-button--add">
+        <NavLink href="project/add">
+            <span class="oi oi-plus" aria-hidden="true"></span>&nbsp;프로젝트 추가하기
+        </NavLink>
+    </li>
+    @if (ProjectInfos != null)
+    {
+        @foreach (var ProjectInfo in ProjectInfos) {
+            <li class="project-button">
+                <NavLink href="@($"project/{ProjectInfo.Id}")">
+                    <h3 class="project-button__title">@ProjectInfo.ProjectName</h3>
+                    <div class="project-button__info">
+                        <span>
+                            ID: @ProjectInfo.Id
+                        </span>
+                        <span>
+                            마지막 수정 날짜: @ProjectInfo.UpdatedAt
+                        </span>
+                    </div>
+                </NavLink>
+            </li>
+        }
+    }
+</ul>
 
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code {
+    private ProjectInfo[]? ProjectInfos = new []{
+        new ProjectInfo { Id= 1, ProjectName= "코인",  UpdatedAt = "2022-08-08" },
+        new ProjectInfo { Id= 2, ProjectName= "한강",  UpdatedAt = "2022-07-08" },
+        new ProjectInfo { Id= 3, ProjectName= "코알라",  UpdatedAt = "2022-06-08" },
+    };
+}

@@ -1,0 +1,41 @@
+@page "/project/add"
+
+<div class="mx-auto">
+    <h3>프로젝트 추가</h3>
+    <EditForm
+        Model="@ProjectAddInfo"
+        >
+            <div class="py-3 border-bottom ">
+                <label for="project-id" class="add-form-label">프로젝트 명</label>
+                <InputText 
+                    id="project-id" 
+                    class="form-control"
+                    @bind-Value="ProjectAddInfo.Title"
+                />
+
+            </div>
+            <div class="py-3 border-bottom">
+                <label for="firebase-id" class="add-form-label">Firebase Id</label>
+                <InputText 
+                    id="firebase-id" 
+                    class="form-control"
+                    @bind-Value="ProjectAddInfo.FirebaseId"
+                />
+            </div>
+            <div class="py-3">
+                <label for="firebase-sdk" class="add-form-label">Firebase SDK</label>
+                <DragAndDropTextArea 
+                    id="firebase-sdk" 
+                    @bind-Value="ProjectAddInfo.Credentials" 
+                />
+            </div>
+            <div class="pb-3 border-bottom d-flex justify-content-center">
+                <button type="submit" class="btn btn-lg btn-primary mx-3">추가</button>
+                <NavLink href="/" class="btn btn-lg btn-secondary mx-3">취소</NavLink>
+            </div>
+    </EditForm>
+</div>
+
+@code {
+    private ProjectAddInfo ProjectAddInfo = new() {};
+}

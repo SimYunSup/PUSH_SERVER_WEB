@@ -1,0 +1,30 @@
+.info__title {
+    font-size: 2rem;
+}
+
+.info-section {
+    margin-bottom: 2rme;
+    padding: 1rem 2rem;
+    border: 1px solid #222;
+}
+.info-section__title {
+    font-size: 1.5rem;
+}
+
+.info-table {
+    border-collapse: collapse;
+}
+
+.info-table__row {
+    border-top: 1px solid #222;
+    border-bottom: 1px solid #222;
+}
+
+.info-table__name {
+    border-right: 1px solid #222;
+    width: 100px;
+}
+
+.info-table__content {
+    width: 300px;
+}

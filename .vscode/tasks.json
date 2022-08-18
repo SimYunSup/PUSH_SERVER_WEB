@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/PUSH_SERVER_WEB.csproj",
+                "${workspaceFolder}/PUSH_SERVER_WEB/PUSH_SERVER_WEB.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/PUSH_SERVER_WEB.csproj",
+                "${workspaceFolder}/PUSH_SERVER_WEB/PUSH_SERVER_WEB.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -33,7 +33,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/PUSH_SERVER_WEB.csproj"
+                "${workspaceFolder}/PUSH_SERVER_WEB/PUSH_SERVER_WEB.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

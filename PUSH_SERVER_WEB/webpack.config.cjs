@@ -1,4 +1,5 @@
 ﻿const webpack = require("webpack");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const path = require("path");
 
 const isDevelopment = process.env.NODE_ENV !== "production";
@@ -8,9 +9,14 @@ module.exports = {
     entry: [
         "./index.ts"
     ],
+    plugins: [
+        new MiniCssExtractPlugin()
+    ],
     output: {
         path: path.resolve(__dirname, "wwwroot/build"),
-        filename: "index.js"
+        filename: "index.js",
+        libraryTarget: 'umd',
+        library: 'BlazorInsertedJS',
     },
     module: {
         rules: [
@@ -23,7 +29,7 @@ module.exports = {
                 test: /.s[ac]ss$/i,
                 exclude: /node_modules/,
                 use: [
-                    "style-loader",
+                    isDevelopment ? "style-loader" : MiniCssExtractPlugin.loader,
                     {
                         loader: "css-loader",
                         options: {

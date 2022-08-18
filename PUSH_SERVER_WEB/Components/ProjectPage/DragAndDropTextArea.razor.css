@@ -1,0 +1,11 @@
+.droptext-area {
+    margin: 1rem 0;
+    padding: 10px 20px; 
+    background: #EEE;
+    border: 3px black dashed;
+}
+
+.droptext-area.hover {
+    background: #BBB;
+    border: 3px black solid;
+}

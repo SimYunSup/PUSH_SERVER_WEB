@@ -1,0 +1,19 @@
+<aside class="project-navbar">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="@($"/project/{ProjectId}")">
+                <span class="oi oi-info" aria-hidden="true"></span> 프로젝트 정보
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="@($"/project/{ProjectId}/firebase")">
+                <span class="oi oi-fire" aria-hidden="true"></span> Firebase 설정
+            </NavLink>
+        </div>
+    </nav>
+</aside>
+
+@code {
+    [Parameter]
+    public string ProjectId { get; set; } = "";
+}

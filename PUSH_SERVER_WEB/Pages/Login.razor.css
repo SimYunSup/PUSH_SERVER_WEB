@@ -1,0 +1,16 @@
+.login-form {
+    margin: auto;
+    padding: 10px;
+    width: 300px;
+}
+.logo {
+    text-align: center;
+}
+
+#logo-animation, #logo-animation > svg {
+    height: 100px;
+}
+
+#logo-animation {
+    margin-bottom: 20px;
+}
