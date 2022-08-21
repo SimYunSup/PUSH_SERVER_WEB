@@ -1,0 +1,44 @@
+@inject IProjectService ProjectService
+<EditForm Model="@ProjectChangeInfo" OnValidSubmit="SaveProject">
+    <div class="pb-3 border-bottom">
+        <label for="firebase-id" class="add-form-label">Firebase Id</label>
+        <InputText 
+            id="firebase-id" 
+            class="form-control"
+            @bind-Value="ProjectChangeInfo.ProjectId"
+        />
+    </div>
+    <div class="py-3">
+        <label for="firebase-sdk" class="add-form-label">Firebase SDK</label>
+        <DragAndDropTextArea 
+            id="firebase-sdk" 
+            @bind-Value="ProjectChangeInfo.Credentials" 
+        />
+    </div>
+    <button type="submit" class="btn btn-primary">수정</button>
+</EditForm>
+
+@code {
+
+
+    protected override void OnInitialized()
+    {
+        ProjectChangeInfo = ProjectService.ProjectInfo!;
+    }
+
+    void SaveProject()
+    {
+        if (ProjectChangeInfo == null)
+        {
+            return;
+        }
+        ProjectService.ChangeProjectInfo(ProjectChangeInfo);
+        ModalInstance?.CloseAsync();
+    }
+
+
+    [CascadingParameter] BlazoredModalInstance? ModalInstance { get; set; }
+
+    [Parameter] public int MovieId { get; set; }
+    ProjectInfo ProjectChangeInfo { get; set; } = new ProjectInfo{};
+}

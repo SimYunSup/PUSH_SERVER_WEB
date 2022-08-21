@@ -10,11 +10,14 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components.WebAssembly.Http;
+using Microsoft.JSInterop;
 
 namespace PUSH_SERVER_WEB.Services
 {
     public interface IHttpService
     {
+        string accessToken { get; set; }
         Task<T?> Get<T>(string uri);
         Task<T?> Post<T>(string uri, object value);
     }
@@ -25,19 +28,23 @@ namespace PUSH_SERVER_WEB.Services
         private NavigationManager _navigationManager;
         private ILocalStorageService _localStorageService;
         private IConfiguration _configuration;
+        private IJSRuntime _runtime;
 
         public HttpService(
             HttpClient httpClient,
             NavigationManager navigationManager,
             ILocalStorageService localStorageService,
+            IJSRuntime jSRuntime,
             IConfiguration configuration
         ) {
             _httpClient = httpClient;
             _navigationManager = navigationManager;
             _localStorageService = localStorageService;
             _configuration = configuration;
+            _runtime = jSRuntime;
         }
 
+        public string accessToken { get; set; }
         public async Task<T?> Get<T>(string uri)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, uri);
@@ -56,17 +63,18 @@ namespace PUSH_SERVER_WEB.Services
         private async Task<T?> sendRequest<T>(HttpRequestMessage request)
         {
             // add jwt auth header if user is logged in and request is to the api url
-            var user = await _localStorageService.GetItem<User>("user");
+            var token = accessToken;
             var isApiUrl = !request.RequestUri?.IsAbsoluteUri ?? false;
-            if (user != null && isApiUrl)
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", user.Token);
-
+            if (token != null && isApiUrl)
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            
+            
             using var response = await _httpClient.SendAsync(request);
 
             // auto logout on 401 response
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                _navigationManager.NavigateTo("");
+                await _localStorageService.RemoveItem("accessToken");
                 return default;
             }
 

@@ -16,12 +16,13 @@ namespace PUSH_SERVER_WEB.Helpers
         [Inject]
         public IAuthenticationService? AuthenticationService { get; set; }
 
-        protected override void Render(RenderTreeBuilder builder)
+        protected override async void Render(RenderTreeBuilder builder)
         {
             var authorize = Attribute.GetCustomAttribute(RouteData.PageType, typeof(AuthorizeAttribute)) != null;
-            if (authorize && NavigationManager != null && AuthenticationService?.User == null)
+            if (authorize && NavigationManager != null && AuthenticationService != null && AuthenticationService?.User == null)
             {
                 var returnUrl = WebUtility.UrlEncode(new Uri(NavigationManager.Uri).PathAndQuery);
+                await AuthenticationService!.Refresh();
                 NavigationManager.NavigateTo($"login?returnUrl={returnUrl}");
             }
             else

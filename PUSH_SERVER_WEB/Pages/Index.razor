@@ -29,9 +29,11 @@
 </ul>
 
 @code {
-    private ProjectInfo[]? ProjectInfos = new []{
-        new ProjectInfo { Id= 1, ProjectName= "코인",  UpdatedAt = "2022-08-08" },
-        new ProjectInfo { Id= 2, ProjectName= "한강",  UpdatedAt = "2022-07-08" },
-        new ProjectInfo { Id= 3, ProjectName= "코알라",  UpdatedAt = "2022-06-08" },
-    };
+    private ProjectInfo[]? ProjectInfos;
+
+        protected override Task OnAfterRenderAsync(bool firstRender)
+        {
+            return base.OnAfterRenderAsync(firstRender);
+        }
 }
+

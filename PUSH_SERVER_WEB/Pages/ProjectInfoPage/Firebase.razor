@@ -1,0 +1,74 @@
+@page "/project/{Id}/firebase"
+@inject IProjectService ProjectService
+
+<ProjectNavbar ProjectId="@Id" />
+@if (ProjectService.ProjectInfo != null)
+{
+    <div class="mx-auto">
+        <div class="mb-5">
+           <div class="info__title">
+                <span>Firebase 설정</span>
+            </div>
+        </div>
+        <div class="info-section">
+            <div class="d-flex justify-content-between mb-3">
+                <h3 class="info-section__title">기본 정보</h3>
+                <button 
+                    type="button"
+                    class="btn btn-primary" 
+                    @onclick="ShowEditProjectBasicInfo">
+                        수정
+                </button>
+            </div>
+            <table class="info-table">
+                <tbody>
+                    <tr class="info-table__row">
+                        <td class="info-table__name">
+                            프로젝트 ID
+                        </td>
+                        <td>
+                            <span>
+                                @ProjectService.ProjectInfo.ProjectId
+                            </span>
+                        </td>
+                    </tr>
+                    <tr class="info-table__row">
+                        <td class="info-table__name">
+                            Admin SDK
+                        </td>
+                        <td>
+                            <span>
+                                @ProjectService.ProjectInfo.Credentials
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@code {
+    public string TemporaryTitle = "";
+    private bool isEditingTitle = false;
+
+    protected override Task OnInitializedAsync()
+    {
+        ProjectService.GetProject(1);
+        TemporaryTitle = ProjectService.ProjectInfo?.ProjectName ?? "";
+        return base.OnInitializedAsync();
+    }
+
+    public void ShowEditProjectBasicInfo()
+    {
+        @* var parameters = new ModalParameters(); *@
+
+        Modal?.Show<EditProjectBasicInfo>("Edit Movie");
+    }
+
+    [Parameter] public string? Id { get; set; }
+    [CascadingParameter] public IModalService Modal { get; set; }
+}
+
+
+

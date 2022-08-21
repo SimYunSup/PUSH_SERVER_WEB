@@ -7,6 +7,7 @@ namespace PUSH_SERVER_WEB.Services
         ProjectInfo? ProjectInfo { get; }
         void GetProject(int id);
         void ChangeProjectName(string name);
+        void ChangeProjectInfo(ProjectInfo changedProjectInfo);
     }
 
     public class ProjectService : IProjectService
@@ -27,6 +28,7 @@ namespace PUSH_SERVER_WEB.Services
                 ProjectName= "코인",
                 ClientKey= "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 ProjectId= "ABCDEFGH",
+                Credentials= "{}",
                 CreatedAt = "2019-08-01",
                 UpdatedAt = "2022-08-08"
             };
@@ -39,6 +41,11 @@ namespace PUSH_SERVER_WEB.Services
                 return;
             }
             ProjectInfo.ProjectName = name;
+        }
+
+        public void ChangeProjectInfo(ProjectInfo changedProjectInfo) 
+        {
+            Console.WriteLine(changedProjectInfo);
         }
     }
 

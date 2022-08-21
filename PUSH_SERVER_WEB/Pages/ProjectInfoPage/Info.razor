@@ -8,7 +8,10 @@
         <div class="mb-5">
             @if(isEditingTitle)
             {
-                <InputText @bind-Value="TemporaryTitle" />
+                <input
+                    @bind-value=TemporaryTitle
+                    @onkeyup="KeyUpTitleForm"
+                />
             }
             else
             {
@@ -29,11 +32,11 @@
                         <td class="info-table__name">
                             API Key
                         </td>
-                        <td class="info-table__name">
+                        <td>
                             <span>
                                 @ProjectService.ProjectInfo.ClientKey
                             </span>
-                            <button class="btn">
+                            <button class="btn btn-secondary" disabled>
                                 <span class="oi oi-reload" aria-hidden="true"></span>
                                 <span class="d-none">Refresh API Key</span>
                             </button>
@@ -50,7 +53,7 @@
                         <td class="info-table__name">
                             ID
                         </td>
-                        <td class="info-table__name">
+                        <td>
                             <span>
                                 @ProjectService.ProjectInfo.Id
                             </span>
@@ -60,7 +63,7 @@
                         <td class="info-table__name">
                             생성 일자
                         </td>
-                        <td class="info-table__name">
+                        <td>
                             <span>
                                 @ProjectService.ProjectInfo.CreatedAt
                             </span>
@@ -70,7 +73,7 @@
                         <td class="info-table__name">
                             수정 일자
                         </td>
-                        <td class="info-table__name">
+                        <td>
                             <span>
                                 @ProjectService.ProjectInfo.UpdatedAt
                             </span>
@@ -83,32 +86,35 @@
 }
 
 @code {
-    public string TemporaryTitle { get; set; } = "";
+    public string TemporaryTitle = "";
     private bool isEditingTitle = false;
 
-    protected override Task OnAfterRenderAsync(bool firstRender)
+    protected override Task OnInitializedAsync()
     {
-        if (firstRender) {
-            ProjectService.GetProject(1);
+        ProjectService.GetProject(1);
+        TemporaryTitle = ProjectService.ProjectInfo?.ProjectName ?? "";
+        return base.OnInitializedAsync();
+    }
+    public void KeyUpTitleForm (KeyboardEventArgs keyEvent)
+    {
+        if (keyEvent.Key == "Enter")
+        {
+            EditTitle();
         }
-        if (isEditingTitle) {
-            TemporaryTitle = ProjectService.ProjectInfo?.ProjectName ?? "";
-        }
-        return base.OnAfterRenderAsync(firstRender);
     }
     public void ToggleEditingTitle ()
     {
         isEditingTitle = !isEditingTitle;
     }
 
-    public void editTitle()
+    public void EditTitle()
     {
+        Console.WriteLine(TemporaryTitle);
         ToggleEditingTitle();
         ProjectService.ChangeProjectName(TemporaryTitle);
     }
-
-    [Parameter]
-    public string? Id { get; set; } = "";
-
+    [Parameter] public string? Id { get; set; }
 }
+
+
 

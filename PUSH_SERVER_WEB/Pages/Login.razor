@@ -1,6 +1,7 @@
 @page "/login"
-@inject IAuthenticationService AuthenticationService
+@inject IAuthenticationService AuthService
 @inject IJSRuntime JS
+@inject HttpClient Http
 
 <PageTitle>Login - BCSD PUSH SERVER</PageTitle>
 
@@ -34,15 +35,30 @@
             <button class="btn btn-primary w-100" type="submit">로그인</button>
         </div>
     </EditForm>
+    <button @onclick="Sibal">ㅁㄴㅇㄹㄻㅇㄴㄹㅇㄴㅁㅇㄴㅁㄹ</button>
 </div>
 
 @code {
-    protected override async void OnInitialized () {
+    protected override async void OnInitialized () 
+    {
         await JS.InvokeVoidAsync("BlazorInsertedJS.loadLottieAnimation", "logo-animation", "./static/push-up.json");
     }
+    class UserForm {
+        public string username {get; set;}
+        public string password {get; set; }
+        public UserForm(string a, string b) {
+            username = a;
+            password = b;
+        }
+    }
+    private async void Sibal() 
+    {
+        await JS.InvokeVoidAsync("BlazorInsertedJS.fetchTest");
+    }
     private LoginForm LoginForm = new() {};
-    private void HandleSubmitLoginForm()
+    private async void HandleSubmitLoginForm()
     {
         Console.WriteLine("확인");
+        await AuthService.Login(LoginForm.Identifier, LoginForm.Password);
     }
 }

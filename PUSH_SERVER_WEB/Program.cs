@@ -7,7 +7,7 @@ using Blazored.Modal;
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
-
+var baseAddress = builder.Configuration.GetValue<string>("BaseAddress");
 builder.Services
      .AddScoped<IAuthenticationService, AuthService>()
      .AddScoped<IHttpService, HttpService>()
@@ -15,6 +15,7 @@ builder.Services
      .AddScoped<IProjectService, ProjectService>();
 builder.Services.AddBlazoredModal();
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseAddress) });
 
 await builder.Build().RunAsync();
