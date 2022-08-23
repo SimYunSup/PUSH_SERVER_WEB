@@ -1,19 +1,18 @@
 ﻿@inherits LayoutComponentBase
+@using Blazored.Toast.Configuration
 @inject IAuthenticationService AuthenticationService
 @inject NavigationManager NavigationManager
 <div class="page">
     <main>
-        @if (AuthenticationService.User != null)
-        {
-            <header class="top-row px-4">
-                <NavLink href="/" target="_blank">BCSD Push Server</NavLink>
-                <div class="ml-auto">
-                    <NavLink href="/logout">Logout</NavLink>
-                </div>
-            </header>
-        }
         <article class="content">
             @Body
         </article>
     </main>
 </div>
+<BlazoredToasts Position="ToastPosition.BottomRight"
+                Timeout="10"
+                IconType="IconType.FontAwesome"
+                ShowProgressBar="true"
+                SuccessClass="success-toast-override"
+                ErrorIcon="fa fa-bug" 
+                SuccessIcon="fa fa-thumbs-up" />

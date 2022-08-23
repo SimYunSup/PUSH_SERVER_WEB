@@ -1,7 +1,9 @@
 @page "/login"
 @inject IAuthenticationService AuthService
+@inject IProjectService ProjectService
+@inject IToastService toastService
+@inject NavigationManager NavigationManager
 @inject IJSRuntime JS
-@inject HttpClient Http
 
 <PageTitle>Login - BCSD PUSH SERVER</PageTitle>
 
@@ -19,12 +21,15 @@
                 @bind-Value="LoginForm.Identifier" 
                 id="login-id"
                 class="form-control"
+                autocomplete="username"
              />
              <ValidationMessage For="() => LoginForm.Identifier" />
         </div>
         <div class="mb-5">
             <label for="login-password">비밀번호</label>
             <InputText 
+                type="password"
+                autocomplete="password"
                 @bind-Value="LoginForm.Password"
                 id="login-password" 
                 class="form-control"
@@ -35,7 +40,6 @@
             <button class="btn btn-primary w-100" type="submit">로그인</button>
         </div>
     </EditForm>
-    <button @onclick="Sibal">ㅁㄴㅇㄹㄻㅇㄴㄹㅇㄴㅁㅇㄴㅁㄹ</button>
 </div>
 
 @code {
@@ -43,22 +47,19 @@
     {
         await JS.InvokeVoidAsync("BlazorInsertedJS.loadLottieAnimation", "logo-animation", "./static/push-up.json");
     }
-    class UserForm {
-        public string username {get; set;}
-        public string password {get; set; }
-        public UserForm(string a, string b) {
-            username = a;
-            password = b;
-        }
-    }
-    private async void Sibal() 
-    {
-        await JS.InvokeVoidAsync("BlazorInsertedJS.fetchTest");
-    }
     private LoginForm LoginForm = new() {};
     private async void HandleSubmitLoginForm()
     {
-        Console.WriteLine("확인");
-        await AuthService.Login(LoginForm.Identifier, LoginForm.Password);
+        try
+        {
+            await AuthService.Login(LoginForm.Identifier, LoginForm.Password);
+        }
+        catch (Exception e)
+        {
+            toastService.ShowError($"로그인하는데 오류가 발생했습니다. {e.Message}");
+            return;
+        }
+        NavigationManager.NavigateTo("/");
+        return;
     }
 }

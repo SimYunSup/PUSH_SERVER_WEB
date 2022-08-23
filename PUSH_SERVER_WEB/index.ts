@@ -95,14 +95,3 @@ export function initializeFileDropZone(dropZoneElement: HTMLElement, inputFile: 
         }
     }
 }
-
-export const fetchTest = async () => {
-    console.log("씨발");
-    await fetch("http://ec2-3-35-67-248.ap-northeast-2.compute.amazonaws.com/api/user/login", {
-    method: "POST",
-    body: JSON.stringify({
-        username: "hjnn",
-        password: "135dbstjq"
-    })
-})
-}

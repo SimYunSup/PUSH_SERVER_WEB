@@ -1,7 +1,18 @@
 ﻿@page "/"
+@attribute [Authorize]
+@inject IAuthenticationService AuthService
+@inject IProjectService ProjectService
+@inject IToastService ToastService
+@inject IJSRuntime JS
 
-<PageTitle>Index</PageTitle>
+<PageTitle>BCSD PUSH SERVER</PageTitle>
 
+<header class="navbar top-row px-4 bg-dark">
+    <NavLink class="navbar-brand" href="/" target="_blank">BCSD Push Server</NavLink>
+    <div class="ml-auto">
+        <NavLink class="btn btn-outline-warning" href="/logout">Logout</NavLink>
+    </div>
+</header>
 <ul class="project-list">
     <li class="project-button project-button--add">
         <NavLink href="project/add">
@@ -31,9 +42,17 @@
 @code {
     private ProjectInfo[]? ProjectInfos;
 
-        protected override Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
+    {
+        try
         {
-            return base.OnAfterRenderAsync(firstRender);
+            ProjectInfos = await ProjectService.GetProjects();
         }
+        catch (Exception e)
+        {
+            ToastService.ShowError($"프로젝트들을 불러오는데 오류가 발생했습니다. {e.Message}");
+            return;
+        }
+    }
 }
 

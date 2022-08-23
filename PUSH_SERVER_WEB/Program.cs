@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using PUSH_SERVER_WEB;
 using PUSH_SERVER_WEB.Services;
 using Blazored.Modal;
+using Blazored.Toast;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -13,7 +14,8 @@ builder.Services
      .AddScoped<IHttpService, HttpService>()
      .AddScoped<ILocalStorageService, LocalStorageService>()
      .AddScoped<IProjectService, ProjectService>();
-builder.Services.AddBlazoredModal();
+builder.Services.AddBlazoredModal()
+     .AddBlazoredToast();
 
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseAddress) });

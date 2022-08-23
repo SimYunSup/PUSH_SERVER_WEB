@@ -1,5 +1,21 @@
 @page "/logout"
-@inject IAuthenticationService AuthenticationService
+@inject IAuthenticationService AuthService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
 
 <PageTitle>잘가요! - BCSD PUSH SERVER</PageTitle>
 
+
+<div id="logout-animation"></div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await JS.InvokeVoidAsync("BlazorInsertedJS.loadLottieAnimation", "logout-animation", "./static/green-bye.json");
+        await AuthService.Logout();
+    }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+}

@@ -1,119 +1,168 @@
 @page "/project/{Id}"
 @inject IProjectService ProjectService
+@inject IToastService ToastService
 
-<ProjectNavbar ProjectId="@Id" />
-@if (ProjectService.ProjectInfo != null)
-{
-    <div class="mx-auto">
-        <div class="mb-5">
-            @if(isEditingTitle)
-            {
-                <input
-                    @bind-value=TemporaryTitle
-                    @onkeyup="KeyUpTitleForm"
-                />
-            }
-            else
-            {
-                <div class="info__title">
-                    <span>@ProjectService.ProjectInfo.ProjectName</span>
-                    <button class="btn" @onclick="ToggleEditingTitle">
-                        <span class="oi oi-brush" aria-hidden="true"></span>
-                        <span class="d-none">Edit Name</span>
-                    </button>
-                </div>
-            }
-        </div>
-        <div class="info-section">
-            <h3 class="info-section__title">프로젝트 키</h3>
-            <table class="info-table">
-                <tbody>
-                    <tr class="info-table__row">
-                        <td class="info-table__name">
-                            API Key
-                        </td>
-                        <td>
-                            <span>
-                                @ProjectService.ProjectInfo.ClientKey
-                            </span>
-                            <button class="btn btn-secondary" disabled>
-                                <span class="oi oi-reload" aria-hidden="true"></span>
-                                <span class="d-none">Refresh API Key</span>
+<PageTitle>프로젝트 @Id - BCSD PUSH SERVER</PageTitle>
+<div class="d-flex w-100 h-100">
+    <ProjectNavbar ProjectId="@Id" />
+    <div class="scroll-area">
+        @if (ProjectService.ProjectInfo != null)
+        {
+            <div class="mx-auto pt-5">
+                <div class="mb-5">
+                    @if(isEditingTitle)
+                    {
+                        <input
+                            @bind-value=TemporaryTitle
+                            @onkeyup="KeyUpTitleForm"
+                        />
+                    }
+                    else
+                    {
+                        <div class="info__title">
+                            <span>@ProjectService.ProjectInfo.ProjectName</span>
+                            <button class="btn" @onclick="ToggleEditingTitle">
+                                <span class="oi oi-brush" aria-hidden="true"></span>
+                                <span class="d-none">Edit Name</span>
                             </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="info-section">
-            <h3 class="info-section__title">기본 정보</h3>
-            <table class="info-table">
-                <tbody>
-                    <tr class="info-table__row">
-                        <td class="info-table__name">
-                            ID
-                        </td>
-                        <td>
-                            <span>
-                                @ProjectService.ProjectInfo.Id
-                            </span>
-                        </td>
-                    </tr>
-                    <tr class="info-table__row">
-                        <td class="info-table__name">
-                            생성 일자
-                        </td>
-                        <td>
-                            <span>
-                                @ProjectService.ProjectInfo.CreatedAt
-                            </span>
-                        </td>
-                    </tr>
-                    <tr class="info-table__row">
-                        <td class="info-table__name">
-                            수정 일자
-                        </td>
-                        <td>
-                            <span>
-                                @ProjectService.ProjectInfo.UpdatedAt
-                            </span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                        </div>
+                    }
+                </div>
+                <div class="info-section">
+                    <h3 class="info-section__title">프로젝트 키</h3>
+                    <table class="info-table">
+                        <tbody>
+                            <tr class="info-table__row">
+                                <td class="info-table__name">
+                                    API Key
+                                </td>
+                                <td>
+                                    <span>
+                                        @ProjectService.ProjectInfo.ClientKey
+                                    </span>
+                                    <button class="btn btn-secondary" @onclick="RefreshClientKey">
+                                        <span class="oi oi-reload" aria-hidden="true"></span>
+                                        <span class="d-none">Refresh API Key</span>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="info-section">
+                    <h3 class="info-section__title">기본 정보</h3>
+                    <table class="info-table">
+                        <tbody>
+                            <tr class="info-table__row">
+                                <td class="info-table__name">
+                                    ID
+                                </td>
+                                <td>
+                                    <span>
+                                        @ProjectService.ProjectInfo.Id
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="info-table__row">
+                                <td class="info-table__name">
+                                    생성 일자
+                                </td>
+                                <td>
+                                    <span>
+                                        @ProjectService.ProjectInfo.CreatedAt
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="info-table__row">
+                                <td class="info-table__name">
+                                    수정 일자
+                                </td>
+                                <td>
+                                    <span>
+                                        @ProjectService.ProjectInfo.UpdatedAt
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="info-section">
+                    <h3 class="info-section__title">프로젝트 삭제</h3>
+                    <div class="d-grid">
+                        <button class="btn btn-danger" @onclick="ShowDeleteModal">삭제</button>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
-}
+</div>
 
 @code {
     public string TemporaryTitle = "";
     private bool isEditingTitle = false;
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        ProjectService.GetProject(1);
+        try
+        {
+            if(ProjectService.ProjectInfo == null || Id != ProjectService.ProjectInfo.Id.ToString())
+            {
+                await ProjectService.GetProject(Id ?? "0");
+            }
+        }
+        catch (Exception e)
+        {
+            ToastService.ShowError($"프로젝트를 불러오는데 오류가 발생했습니다. {e.Message}");
+            return;
+        }
         TemporaryTitle = ProjectService.ProjectInfo?.ProjectName ?? "";
-        return base.OnInitializedAsync();
     }
-    public void KeyUpTitleForm (KeyboardEventArgs keyEvent)
+    public void KeyUpTitleForm(KeyboardEventArgs keyEvent)
     {
         if (keyEvent.Key == "Enter")
         {
+            ToggleEditingTitle();
             EditTitle();
         }
     }
-    public void ToggleEditingTitle ()
+    public void ToggleEditingTitle()
     {
         isEditingTitle = !isEditingTitle;
     }
-
+    public void ShowDeleteModal()
+    {
+        Modal?.Show<RemoveProjectForm>("프로젝트 삭제");
+    }
     public void EditTitle()
     {
-        Console.WriteLine(TemporaryTitle);
-        ToggleEditingTitle();
-        ProjectService.ChangeProjectName(TemporaryTitle);
+        try
+        {
+            ProjectService.ChangeProjectName(TemporaryTitle);
+        }
+        catch (Exception e)
+        {
+            ToastService.ShowError($"프로젝트 이름을 수정하는데 오류가 발생했습니다. {e.Message}");
+            return;
+        }
+        StateHasChanged();
+        ToastService.ShowSuccess($"프로젝트 이름을 수정하였습니다.");
+    }
+
+    public void RefreshClientKey()
+    {
+        try
+        {
+            ProjectService.RefreshClientKey();
+        }
+        catch (Exception e)
+        {
+            ToastService.ShowError($"프로젝트 키를 재생성하는데 오류가 발생했습니다. {e.Message}");
+            return;
+        }
+        ToastService.ShowSuccess($"프로젝트 키를 재생성하였습니다.");
     }
     [Parameter] public string? Id { get; set; }
+    [CascadingParameter] public IModalService? Modal { get; set; }
 }
 
 

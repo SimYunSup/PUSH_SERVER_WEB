@@ -7,11 +7,10 @@ namespace PUSH_SERVER_WEB.Services
 {
     public interface IAuthenticationService
     {
-        User? User { get; }
         string? accessToken { get; set; }
         Task Login(string username, string password);
         Task Logout();
-        Task Refresh();
+        Task<User?> Refresh();
     }
 
     public class AuthService : IAuthenticationService
@@ -20,7 +19,6 @@ namespace PUSH_SERVER_WEB.Services
         private NavigationManager _navigationManager;
         private ILocalStorageService _localStorageService;
 
-        public User? User { get; private set; }
         public string? accessToken { get; set; }
 
         public AuthService(
@@ -35,18 +33,22 @@ namespace PUSH_SERVER_WEB.Services
 
         public async Task Login(string username, string password)
         {
-            User = await _httpService.Post<User>("/api/user/login", new { username, password });
+            var User = await _httpService.Post<User>("/api/user/login", new { username, password });
             await _localStorageService.SetItem("refreshToken", User?.refresh_token);
-            accessToken = User?.access_token;
+            await _localStorageService.SetItem("accessToken", User?.access_token);
         }
 
-        public async Task Refresh() {
+        public async Task<User?> Refresh() {
             var RefreshToken = await _localStorageService.GetItem<string>("refreshToken");
-            User = await _httpService.Post<User>("/api/user/refresh", new { RefreshToken });
+
+            var Response = await _httpService.Post<User>("/api/user/refresh", new { refresh_token= RefreshToken });
+
+            await _localStorageService.SetItem("refreshToken", Response?.refresh_token);
+            await _localStorageService.SetItem("accessToken", Response?.access_token);
+            return Response;
         }
         public async Task Logout()
         {
-            User = null;
             await _httpService.Get<Object>("/api/user/logout");
             await _localStorageService.RemoveItem("refreshToken");
             await _localStorageService.RemoveItem("accessToken");

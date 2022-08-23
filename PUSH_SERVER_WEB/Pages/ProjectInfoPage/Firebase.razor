@@ -1,73 +1,89 @@
 @page "/project/{Id}/firebase"
 @inject IProjectService ProjectService
+@inject IToastService ToastService
 
-<ProjectNavbar ProjectId="@Id" />
-@if (ProjectService.ProjectInfo != null)
-{
-    <div class="mx-auto">
-        <div class="mb-5">
-           <div class="info__title">
-                <span>Firebase 설정</span>
+<PageTitle>프로젝트 @Id - BCSD PUSH SERVER</PageTitle>
+<div class="d-flex w-100 h-100">
+    <ProjectNavbar ProjectId="@Id" />
+    <div class="scroll-area">
+        @if (ProjectService.ProjectInfo != null)
+        {
+            <div class="mx-auto pt-5">
+                <div class="mb-5">
+                   <div class="info__title">
+                        <span>Firebase 설정</span>
+                    </div>
+                </div>
+                <div class="info-section">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h3 class="info-section__title">기본 정보</h3>
+                        <button 
+                            type="button"
+                            class="btn btn-primary" 
+                            @onclick="ShowEditProjectBasicInfo">
+                                수정
+                        </button>
+                    </div>
+                    <table class="info-table">
+                        <tbody>
+                            <tr class="info-table__row">
+                                <td class="info-table__name">
+                                    프로젝트 ID
+                                </td>
+                                <td class="info-table__content">
+                                    <span>
+                                        @ProjectService.ProjectInfo.ProjectId
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="info-table__row">
+                                <td class="info-table__name">
+                                    Admin SDK
+                                </td>
+                                <td class="info-table__content">
+                                    <span>
+                                        @ProjectService.ProjectInfo.Credentials
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-        <div class="info-section">
-            <div class="d-flex justify-content-between mb-3">
-                <h3 class="info-section__title">기본 정보</h3>
-                <button 
-                    type="button"
-                    class="btn btn-primary" 
-                    @onclick="ShowEditProjectBasicInfo">
-                        수정
-                </button>
-            </div>
-            <table class="info-table">
-                <tbody>
-                    <tr class="info-table__row">
-                        <td class="info-table__name">
-                            프로젝트 ID
-                        </td>
-                        <td>
-                            <span>
-                                @ProjectService.ProjectInfo.ProjectId
-                            </span>
-                        </td>
-                    </tr>
-                    <tr class="info-table__row">
-                        <td class="info-table__name">
-                            Admin SDK
-                        </td>
-                        <td>
-                            <span>
-                                @ProjectService.ProjectInfo.Credentials
-                            </span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        }
     </div>
-}
+</div>
 
 @code {
-    public string TemporaryTitle = "";
     private bool isEditingTitle = false;
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        ProjectService.GetProject(1);
-        TemporaryTitle = ProjectService.ProjectInfo?.ProjectName ?? "";
-        return base.OnInitializedAsync();
+        
+        try
+        {
+            if(ProjectService.ProjectInfo == null || Id != ProjectService.ProjectInfo.Id.ToString())
+            {
+                await ProjectService.GetProject(Id ?? "0");
+            }
+        }
+        catch (Exception e)
+        {
+            ToastService.ShowError($"프로젝트를 불러오는데 오류가 발생했습니다. {e.Message}");
+            return;
+        }
     }
 
-    public void ShowEditProjectBasicInfo()
+    public async void ShowEditProjectBasicInfo()
     {
-        @* var parameters = new ModalParameters(); *@
 
-        Modal?.Show<EditProjectBasicInfo>("Edit Movie");
+        var ModalResult = Modal?.Show<EditProjectBasicInfo>("프로젝트 정보 수정");
+        await ModalResult!.Result;
+        StateHasChanged();
     }
 
     [Parameter] public string? Id { get; set; }
-    [CascadingParameter] public IModalService Modal { get; set; }
+    [CascadingParameter] public IModalService? Modal { get; set; }
 }
 
 

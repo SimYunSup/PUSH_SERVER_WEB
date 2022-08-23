@@ -1,4 +1,6 @@
 @inject IProjectService ProjectService
+@inject IToastService ToastService
+
 <EditForm Model="@ProjectChangeInfo" OnValidSubmit="SaveProject">
     <div class="pb-3 border-bottom">
         <label for="firebase-id" class="add-form-label">Firebase Id</label>
@@ -23,7 +25,7 @@
 
     protected override void OnInitialized()
     {
-        ProjectChangeInfo = ProjectService.ProjectInfo!;
+        ProjectChangeInfo = (ProjectInfo)ProjectService.ProjectInfo!.Clone();
     }
 
     void SaveProject()
@@ -32,13 +34,21 @@
         {
             return;
         }
-        ProjectService.ChangeProjectInfo(ProjectChangeInfo);
+        try 
+        {
+            ProjectService.ChangeProjectInfo(ProjectChangeInfo);
+        }
+        catch (Exception e)
+        {
+            ToastService.ShowError($"프로젝트를 수정하는데 오류가 발생했습니다. {e.Message}");
+            return;
+        }
+        ToastService.ShowSuccess($"프로젝트를 수정하였습니다.");
         ModalInstance?.CloseAsync();
     }
 
 
     [CascadingParameter] BlazoredModalInstance? ModalInstance { get; set; }
 
-    [Parameter] public int MovieId { get; set; }
     ProjectInfo ProjectChangeInfo { get; set; } = new ProjectInfo{};
 }

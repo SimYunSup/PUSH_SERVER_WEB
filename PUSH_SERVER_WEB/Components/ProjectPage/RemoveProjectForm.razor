@@ -1,0 +1,49 @@
+@inject IProjectService ProjectService
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+
+<div class="d-grid gap-3">
+    <span style="user-select:none;">
+        @ProjectService.ProjectInfo!.ProjectName 프로젝트를 영구적으로 삭제합니다.
+        삭제한 프로젝트는 복구할 수 없습니다.
+        <br>
+        앱 영구 삭제를 위하여 프로젝트 이름을 정확하게 입력하세요.
+    
+    </span>
+    <input 
+        type="text" 
+        @bind-value="DeletingTitle"
+    />
+    <button 
+        class="btn btn-danger" 
+        disabled="@(DeletingTitle != ProjectService.ProjectInfo.ProjectName)"
+        @onclick="ClickDeleteButton"
+    >
+        삭제
+    </button>
+</div>
+
+@code {
+    void ClickDeleteButton()
+    {
+        if (ProjectService.ProjectInfo == null)
+        {
+            return;
+        }
+        try 
+        {
+            ProjectService.DeleteProject();
+        }
+        catch (Exception e)
+        {
+            ToastService.ShowError($"프로젝트를 삭제하는데 오류가 발생했습니다. {e.Message}");
+            return;
+        }
+        ToastService.ShowSuccess($"프로젝트를 삭제하였습니다.");
+        NavigationManager.NavigateTo("/");
+        ModalInstance?.CloseAsync();
+    }
+    [CascadingParameter] 
+    BlazoredModalInstance? ModalInstance { get; set; }
+    private string DeletingTitle { get; set; } = "";
+}
