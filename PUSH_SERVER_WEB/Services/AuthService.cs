@@ -29,7 +29,8 @@ namespace PUSH_SERVER_WEB.Services
             _httpService = httpService;
             _navigationManager = navigationManager;
             _localStorageService = localStorageService;
-            if (accessToken == null)
+            var path = new Uri(navigationManager.Uri).PathAndQuery;
+            if (path != "/login" && accessToken == null)
             {
                 this.Refresh();
             }
@@ -40,6 +41,7 @@ namespace PUSH_SERVER_WEB.Services
             var User = await _httpService.Post<User>("/api/user/login", new { username, password });
             await _localStorageService.SetItem("refreshToken", User?.refresh_token);
             await _localStorageService.SetItem("accessToken", User?.access_token);
+            accessToken = User?.access_token;
         }
 
         public async Task<User?> Refresh() {
@@ -49,6 +51,7 @@ namespace PUSH_SERVER_WEB.Services
 
             await _localStorageService.SetItem("refreshToken", Response?.refresh_token);
             await _localStorageService.SetItem("accessToken", Response?.access_token);
+            accessToken = Response?.access_token;
             return Response;
         }
         public async Task Logout()

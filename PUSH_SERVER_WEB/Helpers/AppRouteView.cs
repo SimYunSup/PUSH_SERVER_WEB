@@ -19,8 +19,10 @@ namespace PUSH_SERVER_WEB.Helpers
         protected override void Render(RenderTreeBuilder builder)
         {
             var authorize = Attribute.GetCustomAttribute(RouteData.PageType, typeof(AuthorizeAttribute)) != null;
-            if (authorize && NavigationManager != null && AuthenticationService?.accessToken == null)
+            var path = new Uri(NavigationManager?.Uri).PathAndQuery;
+            if (authorize && NavigationManager != null && AuthenticationService?.accessToken == null && path != "/login")
             {
+                Console.WriteLine(path);
                 NavigationManager.NavigateTo("/login");
             }
             else
