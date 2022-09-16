@@ -13,7 +13,7 @@ namespace PUSH_SERVER_WEB.Services
         void ChangeProjectName(string name);
         void ChangeProjectInfo(ProjectInfo changedProjectInfo);
         void DeleteProject();
-        void RefreshClientKey();
+        Task<ClientKeyInfo?> RefreshClientKey();
     }
 
     public class ProjectService : IProjectService
@@ -122,23 +122,17 @@ namespace PUSH_SERVER_WEB.Services
             ProjectInfo = null;
         }
 
-        public async void RefreshClientKey()
+        public async Task<ClientKeyInfo?> RefreshClientKey()
         {
             if (ProjectInfo == null)
             {
-                return;
+                return null;
             }
-            await _httpService.Patch<ClientKeyInfo>($"/api/project/{ProjectInfo.Id}/client-key", new Object{})
-            .ContinueWith(
-                response =>
-                {
-                    if (response.Result == null)
-                    {
-                        return;
-                    }
-                    ProjectInfo.ClientKey = response.Result.client_key;
-                }
-            );
+            var Response = await _httpService.Patch<ClientKeyInfo>($"/api/project/{ProjectInfo.Id}/client-key", new Object{});
+            
+            ProjectInfo.ClientKey = Response?.client_key ?? " ";
+
+            return Response;
         }
     }
 
