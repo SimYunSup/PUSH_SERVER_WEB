@@ -52,7 +52,7 @@
         }
         catch (Exception e)
         {
-            ToastService.ShowError($"프로젝트를 추가하는데 오류가 발생했습니다. {e.Message}");
+            ToastService.ShowError($"프로젝트를 추가하는데 오류가 발생했습니다.\n {e.Message}");
             return;
         }
         ToastService.ShowSuccess($"{ProjectAddInfo.Title} 프로젝트 생성에 성공했습니다.");

@@ -56,7 +56,7 @@
         }
         catch (Exception e)
         {
-            toastService.ShowError($"로그인하는데 오류가 발생했습니다. {e.Message}");
+            toastService.ShowError($"로그인하는데 오류가 발생했습니다.\n {e.Message}");
             return;
         }
         NavigationManager.NavigateTo("/");

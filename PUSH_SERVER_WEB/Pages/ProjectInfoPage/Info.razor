@@ -114,7 +114,7 @@
         }
         catch (Exception e)
         {
-            ToastService.ShowError($"프로젝트를 불러오는데 오류가 발생했습니다. {e.Message}");
+            ToastService.ShowError($"프로젝트를 불러오는데 오류가 발생했습니다.\n {e.Message}");
             return;
         }
         TemporaryTitle = ProjectService.ProjectInfo?.ProjectName ?? "";
@@ -143,7 +143,7 @@
         }
         catch (Exception e)
         {
-            ToastService.ShowError($"프로젝트 이름을 수정하는데 오류가 발생했습니다. {e.Message}");
+            ToastService.ShowError($"프로젝트 이름을 수정하는데 오류가 발생했습니다.\n {e.Message}");
             return;
         }
         StateHasChanged();
