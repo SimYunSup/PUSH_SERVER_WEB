@@ -109,8 +109,8 @@
             if(ProjectService.ProjectInfo == null || Id != ProjectService.ProjectInfo.Id.ToString())
             {
                 await ProjectService.GetProject(Id ?? "0");
-                ClientKey = ProjectService.ProjectInfo?.ClientKey ?? " ";
             }
+            ClientKey = ProjectService.ProjectInfo?.ClientKey ?? " ";
         }
         catch (Exception e)
         {
