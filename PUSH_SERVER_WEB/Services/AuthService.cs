@@ -29,6 +29,10 @@ namespace PUSH_SERVER_WEB.Services
             _httpService = httpService;
             _navigationManager = navigationManager;
             _localStorageService = localStorageService;
+            if (accessToken == null)
+            {
+                this.Refresh();
+            }
         }
 
         public async Task Login(string username, string password)
