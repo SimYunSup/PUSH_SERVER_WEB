@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using PUSH_SERVER_WEB;
 using PUSH_SERVER_WEB.Services;
+using PUSH_SERVER_WEB.Helpers;
 using Blazored.Modal;
 using Blazored.Toast;
 
@@ -18,6 +19,13 @@ builder.Services.AddBlazoredModal()
      .AddBlazoredToast();
 
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseAddress) });
+builder.Services.AddScoped(x => {
+     if (baseAddress == "")
+          return new HttpClient(new FakeBackendHandler()) { BaseAddress = new Uri("https://localhost:7089/") };
+
+     var apiUrl = new Uri(baseAddress);
+     return new HttpClient() { BaseAddress = apiUrl };
+});
+// builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseAddress) });
 
 await builder.Build().RunAsync();
