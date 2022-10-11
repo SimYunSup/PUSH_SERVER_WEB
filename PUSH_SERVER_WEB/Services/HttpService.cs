@@ -137,7 +137,6 @@ namespace PUSH_SERVER_WEB.Services
             var body = await response.Content.ReadAsStringAsync();
             if (!string.IsNullOrWhiteSpace(body))
                 sb.AppendLine(body);
-            Console.WriteLine(sb.ToString());
             if (sb.ToString() != "")
             {
                 return await response.Content.ReadFromJsonAsync<T>();

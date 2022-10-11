@@ -38,7 +38,7 @@
                                 </td>
                                 <td>
                                     <span>
-                                        @ProjectService.ProjectInfo.ClientKey
+                                        @ClientKey
                                     </span>
                                     <button class="btn btn-secondary" @onclick="RefreshClientKey">
                                         <span class="oi oi-reload" aria-hidden="true"></span>
@@ -100,6 +100,7 @@
 @code {
     public string TemporaryTitle = "";
     private bool isEditingTitle = false;
+    private string ClientKey = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -109,10 +110,11 @@
             {
                 await ProjectService.GetProject(Id ?? "0");
             }
+            ClientKey = ProjectService.ProjectInfo?.ClientKey ?? " ";
         }
         catch (Exception e)
         {
-            ToastService.ShowError($"프로젝트를 불러오는데 오류가 발생했습니다. {e.Message}");
+            ToastService.ShowError($"프로젝트를 불러오는데 오류가 발생했습니다.\n {e.Message}");
             return;
         }
         TemporaryTitle = ProjectService.ProjectInfo?.ProjectName ?? "";
@@ -141,22 +143,24 @@
         }
         catch (Exception e)
         {
-            ToastService.ShowError($"프로젝트 이름을 수정하는데 오류가 발생했습니다. {e.Message}");
+            ToastService.ShowError($"프로젝트 이름을 수정하는데 오류가 발생했습니다.\n {e.Message}");
             return;
         }
         StateHasChanged();
         ToastService.ShowSuccess($"프로젝트 이름을 수정하였습니다.");
     }
 
-    public void RefreshClientKey()
+    public async void RefreshClientKey()
     {
         try
         {
-            ProjectService.RefreshClientKey();
+            var Response = await ProjectService.RefreshClientKey();
+            ClientKey = Response?.client_key ?? " ";
+            this.StateHasChanged();
         }
         catch (Exception e)
         {
-            ToastService.ShowError($"프로젝트 키를 재생성하는데 오류가 발생했습니다. {e.Message}");
+            ToastService.ShowError($"프로젝트 키를 재생성하는데 오류가 발생했습니다.\n {e.Message}");
             return;
         }
         ToastService.ShowSuccess($"프로젝트 키를 재생성하였습니다.");

@@ -1,7 +1,10 @@
-﻿<CascadingBlazoredModal>
+﻿@inject NavigationManager NavigationManager;
+@inject ILocalStorageService LocalStorageService;
+
+<CascadingBlazoredModal>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
-            <AppRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
         </Found>
         <NotFound>
             <PageTitle>Not found</PageTitle>
@@ -11,3 +14,14 @@
         </NotFound>
     </Router>
 </CascadingBlazoredModal>
+
+@code {
+    protected override async Task OnInitializedAsync () {
+        var path = new Uri(NavigationManager?.Uri ?? "").PathAndQuery;
+        var token = await LocalStorageService.GetItem<string>("refreshToken");
+        if (token == null && NavigationManager != null && path != "/login")
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+}

@@ -36,6 +36,7 @@ namespace PUSH_SERVER_WEB.Services
             var User = await _httpService.Post<User>("/api/user/login", new { username, password });
             await _localStorageService.SetItem("refreshToken", User?.refresh_token);
             await _localStorageService.SetItem("accessToken", User?.access_token);
+
         }
 
         public async Task<User?> Refresh() {

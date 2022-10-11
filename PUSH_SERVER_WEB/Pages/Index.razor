@@ -1,5 +1,4 @@
 ﻿@page "/"
-@attribute [Authorize]
 @inject IAuthenticationService AuthService
 @inject IProjectService ProjectService
 @inject IToastService ToastService
@@ -50,7 +49,7 @@
         }
         catch (Exception e)
         {
-            ToastService.ShowError($"프로젝트들을 불러오는데 오류가 발생했습니다. {e.Message}");
+            ToastService.ShowError($"프로젝트들을 불러오는데 오류가 발생했습니다.\n {e.Message}");
             return;
         }
     }

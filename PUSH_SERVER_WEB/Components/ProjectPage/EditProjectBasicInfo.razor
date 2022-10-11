@@ -40,7 +40,7 @@
         }
         catch (Exception e)
         {
-            ToastService.ShowError($"프로젝트를 수정하는데 오류가 발생했습니다. {e.Message}");
+            ToastService.ShowError($"프로젝트를 수정하는데 오류가 발생했습니다.\n {e.Message}");
             return;
         }
         ToastService.ShowSuccess($"프로젝트를 수정하였습니다.");
